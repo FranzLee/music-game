@@ -1,0 +1,357 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hant-TW" lang="zh-Hant-TW">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+} 
+.styleTopic {
+    color: rgba(153,153,255,1);
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+ .styleText {
+    color: rgba(153, 153, 255, 1);
+    font-size: medium;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+var scores = 0;
+var levels = 0;
+var obstacle = [];
+var obstacleCenter = 270;
+var obstacleGap = 80;
+var block = [];
+var blockSpeed = 10;
+var lines = [];
+var targetArea = [];
+var text = [new conponent()];
+var combo = 0;
+
+function startGame() {
+    myGameArea.start();
+    player = new conponent("DeepSkyBlue", 480, 270, 40, 40)
+}
+
+var myGameArea = {
+    keyD : false,
+    keyF : false,
+    keyG : false,
+    keyH : false,
+    keyJ : false,
+    keyK : false,
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 960;
+        this.canvas.height = 540;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.frame = 0
+        this.interval = setInterval(updateGameArea, 20);
+
+        window.addEventListener('keydown', function(e) {
+            whenKeyDown(e.code);
+            console.log('keyCode =', e.keyCode);
+            console.log('code =', e.code);
+        });
+        window.addEventListener('keyup', function (e) {
+            whenKeyUp(e.code);
+            console.log('code =', e.code, ' is up');
+        });
+
+        for(i = (this.canvas.width - (6 * 100 + 7 * 10)) / 2; i <= (this.canvas.width + (6 * 100 + 7 * 10)) / 2 - 10; i += 110) {
+            lines.push(new conponent("Gold", i, 0, 10, this.canvas.height));
+        }
+        for(i = 0; i < 6; i++) {
+            targetArea.push(new conponent("SkyBlue", lines[i].x + 10, this.canvas.height - 60, 100, 60))
+        }
+    }, 
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval)
+    }
+}
+
+function conponent(color, x, y, weight, height, type, time){
+    this.color = color;
+    this.type = type
+    this.x = x;
+    this.y = y;
+    this.weight = weight;
+    this.height = height;
+    this.blockNumber = block.length;
+    this.update = function() {
+        if (this.type == "text") {
+            myGameArea.context.font = this.weight;
+            myGameArea.context.fillStyle = this.color;
+            myGameArea.context.fillText(this.height, this.x, this.y);
+        }
+        else if (this.type == "shortBlock") {
+            if((this.x == 155 && myGameArea.keyD) || (this.x == 265 && myGameArea.keyF) || (this.x == 375 && myGameArea.keyG) || (this.x == 485 && myGameArea.keyH) || (this.x == 595 && myGameArea.keyJ) || (this.x == 705 && myGameArea.keyK)){
+                var blockToArea = absolute(this.y - myGameArea.canvas.height + 60);
+                if(blockToArea <= 60) {
+                    // block.splice(this.blockNumber, 1)
+                    this.x = -200;
+                    combo += 1;
+                    if(blockToArea <= 30) {
+                        scores += (1000 + 100 * combo);
+                        rate("perfect");
+                    }
+                    else if(blockToArea <= 40) {
+                        scores += (700 + 70 * combo);
+                        rate("great");
+                    }
+                    else {
+                        scores += (500 + 50 * combo);
+                        rate("nice");
+                    }
+                }
+            }
+            if((this.y > myGameArea.canvas.height) && (this.x > 0)) {
+                this.x = -200;
+                combo = 0;
+                rate("miss");
+            }
+            this.y += blockSpeed;
+            myGameArea.context.fillStyle = this.color;
+            myGameArea.context.fillRect(this.x, this.y, this.weight, this.height);
+        }
+        else if (this.type == "longBlock") {
+            var blockToArea = this.y + this.height - (myGameArea.canvas.height - 60);
+            if((this.x == 155 && myGameArea.keyD) || (this.x == 265 && myGameArea.keyF) || (this.x == 375 && myGameArea.keyG) || (this.x == 485 && myGameArea.keyH) || (this.x == 595 && myGameArea.keyJ) || (this.x == 705 && myGameArea.keyK)){
+                this.bePressed = true;
+            }
+            else {
+                this.bePressed = false;
+            }
+            if((blockToArea < this.height) && (blockToArea >= -60)) {
+                if((blockToArea <= 60) && (this.bePressed) && (!this.longBlockFirstPressed)) {
+                    this.longBlockFirstPressed = true;
+                    conbo += 1;
+                    blockToArea = absolute(blockToArea);
+                    if(blockToArea <= 30) {
+                        scores += (1000 + 100 * combo);
+                        rate("perfect");
+                    }
+                    else if(blockToArea <= 40) {
+                        scores += (700 + 70 * combo);
+                        rate("great");
+                    }
+                    else {
+                        scores += (500 + 50 * combo);
+                        rate("nice");
+                    }
+                    console.log("first press");
+                }
+                else if((this.bePressed) && (this.y % 60 == 0)) {
+                    combo += 1;
+                    scores += (1000 + 100 * combo);
+                    rate("perfect");
+                    console.log("pressing");
+                }
+                else if((!this.bePressed) && (blockToArea > 60)) {
+                    combo = 0;
+                    rate("miss");
+                    console.log("miss");
+                }
+                console.log(blockToArea);
+            }
+            this.y += blockSpeed;
+            myGameArea.context.fillStyle = this.color;
+            myGameArea.context.fillRect(this.x, this.y, this.weight, this.height);
+        }
+        else {
+        myGameArea.context.fillStyle = this.color;
+        myGameArea.context.fillRect(this.x, this.y, this.weight, this.height);
+        }
+    }
+    this.detectObjectCollision = function(things) {
+        var objectTop = this.y
+        var objectLeft = this.x
+        var objectRight = this.x + this.weight
+        var objectBottom = this.y + this.height
+        var thingsTop = things.y
+        var thingsLeft = things.x
+        var thingsRight = things.x + things.weight
+        var thingsBottom = things.y + things.height
+        var result = true
+        if ((thingsTop > objectBottom) || (thingsBottom < objectTop) || (thingsLeft > objectRight) || (thingsRight < objectLeft)) {
+            result = false
+        }
+        return result 
+    }
+}
+
+function updateGameArea() {
+    if (myGameArea.key && myGameArea.key == 'ArrowLeft') { leftholding(); }
+    if (myGameArea.key && myGameArea.key == 'ArrowRight') { rightholding(); }
+    if (myGameArea.key && myGameArea.key == 'ArrowDown') { downholding(); }
+    if (myGameArea.key && myGameArea.key == 'ArrowUp') { upholding(); }
+
+    myGameArea.clear();
+    for (i = 0; i < lines.length; ++i) {
+        lines[i].update();
+    }
+    for (i = 0; i < targetArea.length; ++i) {
+        targetArea[i].update();
+    }
+    if(block.length != 0){
+        // console.log("block.length", block.length);
+        for (j = block.length - 1; j >= 0; --j) {
+            // console.log(i);
+            block[j].update();
+        }
+    }
+    for(i = 0; i < text.length; ++i) {
+        text[i].update();
+    }
+    song();
+    myGameArea.frame += 1;
+    document.getElementById("scores").innerHTML = 'Scores : ' + Math.round(scores);
+    document.getElementById("levels").innerHTML = 'Combo : ' + combo;
+}
+
+function everyFrame (n) {
+    if (myGameArea.frame % n == 0){
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+function absolute(x) {
+    var x = Number(x);
+    if (x < 0) {
+        x = -x;
+    }
+    return x;
+}
+
+function getRandom (x) {
+    return Math.floor(Math.random() * x) + 1;
+}
+
+function whenKeyDown(codeOfKey) {
+    var code = String(codeOfKey);
+    if(code == "KeyD"){
+        myGameArea.keyD = true;
+    }
+    else if(code == "KeyF") {
+        myGameArea.keyF = true;
+    }
+    else if(code == "KeyG") {
+        myGameArea.keyG = true;
+    }
+    else if(code == "KeyH") {
+        myGameArea.keyH = true;
+    }
+    else if(code == "KeyJ") {
+        myGameArea.keyJ = true;
+    }
+    else if(code == "KeyK") {
+        myGameArea.keyK = true;
+    }
+}
+
+function whenKeyUp(codeOfKey) {
+    var code = String(codeOfKey);
+    if(code == "KeyD"){
+        myGameArea.keyD = false;
+    }
+    else if(code == "KeyF") {
+        myGameArea.keyF = false;
+    }
+    else if(code == "KeyG") {
+        myGameArea.keyG = false;
+    }
+    else if(code == "KeyH") {
+        myGameArea.keyH = false;
+    }
+    else if(code == "KeyJ") {
+        myGameArea.keyJ = false;
+    }
+    else if(code == "KeyK") {
+        myGameArea.keyK = false;
+    }
+}
+
+function rate(rate) {
+    if(rate == "perfect") {
+        text[0] = new conponent("Blue", myGameArea.canvas.width - 100, myGameArea.canvas.height / 2, "30px Arial", "perfect", "text");
+    }
+    if(rate == "great") {
+        text[0] = new conponent("Blue", myGameArea.canvas.width - 100, myGameArea.canvas.height / 2, "30px Arial", " great ", "text");
+    }
+    if(rate == "nice") {
+        text[0] = new conponent("Blue", myGameArea.canvas.width - 100, myGameArea.canvas.height / 2, "30px Arial", " nice  ", "text");
+    }
+    if(rate == "miss") {
+        text[0] = new conponent("Blue", myGameArea.canvas.width - 100, myGameArea.canvas.height / 2, "30px Arial", " miss  ", "text");
+    }
+}
+
+function newShortBlock(place, secondTime) {
+    var x = 155 + 110 * (Number(place) - 1);
+    var frameTime = secondTime * 20;
+    if(myGameArea.frame == Number(frameTime)) {
+        block.push(new conponent("Red", x, -60, 100, 60, "shortBlock"));
+    }
+}
+
+function newLongBlock(place, secondTime, lastSecondTime) {
+    var x = 155 + 110 * (Number(place) - 1);
+    var frameTime = Number(secondTime) * 20;
+    var blockHeight = Number(lastSecondTime) * 20 * 20;
+    if(myGameArea.frame == frameTime) {
+        block.push(new conponent("Pink", x, -blockHeight, 100, blockHeight, "longBlock"));
+    }
+}
+
+function song() {
+    newShortBlock(1, 0);
+    newShortBlock(4, 0.5);
+    newShortBlock(1, 1);
+    newShortBlock(2, 2);
+    newShortBlock(6, 3);
+    newShortBlock(4, 4);
+    newShortBlock(1, 6);
+    newShortBlock(6, 6.5);
+    newShortBlock(2, 7);
+    newShortBlock(6, 8);
+    newShortBlock(5, 9);
+    newShortBlock(4, 10);
+    newShortBlock(3, 12);
+    newShortBlock(2, 12.5);
+    newShortBlock(1, 13);
+    newShortBlock(5, 14);
+    newShortBlock(3, 15);
+    newShortBlock(2, 16);
+    newShortBlock(4, 17);
+    newShortBlock(5, 19);
+    newShortBlock(2, 19.5);
+    newShortBlock(1, 20);
+    newShortBlock(4, 21);
+    newShortBlock(6, 22);
+    newShortBlock(3, 23);
+    newLongBlock(4, 25, 3);
+}
+</script>
+
+<button onmousedown="upholding()" onmouseup="slowdown()" onmouseout="slowdown()">向上</button>
+<button onmousedown="leftholding()" onmouseup="slowdown()" onmouseout="slowdown()">向左</button>
+<button onmousedown="rightholding()" onmouseup="slowdown()" onmouseout="slowdown()">向右</button>
+<button onmousedown="downholding()" onmouseup="slowdown()" onmouseout="slowdown()">向下</button>
+<p class="styleText" id="leader">Use arrow keys or buttons to control</p>
+<p class="styleText" id="scores"></p>
+<p class="styleText" id="levels"></p>
+
+</body>
+</html>
