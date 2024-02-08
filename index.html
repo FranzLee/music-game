@@ -134,7 +134,7 @@ function conponent(color, x, y, weight, height, type, time){
             if((blockToArea < this.height) && (blockToArea >= -60)) {
                 if((blockToArea <= 60) && (this.bePressed) && (!this.longBlockFirstPressed)) {
                     this.longBlockFirstPressed = true;
-                    conbo += 1;
+                    combo += 1;
                     blockToArea = absolute(blockToArea);
                     if(blockToArea <= 30) {
                         scores += (1000 + 100 * combo);
@@ -150,7 +150,7 @@ function conponent(color, x, y, weight, height, type, time){
                     }
                     console.log("first press");
                 }
-                else if((this.bePressed) && (this.y % 60 == 0)) {
+                else if((this.bePressed) && (this.y % 60 == 0) && (blockToArea > 0)) {
                     combo += 1;
                     scores += (1000 + 100 * combo);
                     rate("perfect");
@@ -342,6 +342,11 @@ function song() {
     newShortBlock(6, 22);
     newShortBlock(3, 23);
     newLongBlock(4, 25, 3);
+    newShortBlock(6, 25);
+    newShortBlock(2, 25.5);
+    newShortBlock(3, 26);
+    newShortBlock(5, 26.5);
+    newShortBlock(1, 27);
 }
 </script>
 
