@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-Hant-TW" lang="zh-Hant-TW">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+} 
+.styledButton {
+            border: 0;
+            line-height: 2.5;
+            padding: 0 20px;
+            font-size: 1rem;
+            text-align: center;
+            color: #fff;
+            text-shadow: 1px 1px 1px #000;
+            border-radius: 10px;
+            background-color: rgba(220, 0, 0, 1);
+            background-image: linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0));
+            box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+        }
+
+.styledButton:hover {
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.styledButton:active {
+    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, 0.6), inset 2px 2px 3px rgba(0, 0, 0, 0.6);
+}
+.styleTopic {
+    color: rgba(153,153,255,1);
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+ .styleText {
+    color: rgba(153, 153, 255, 1);
+    font-size: medium;
+}
+</style>
+</head>
+<body>
+    <p class="styleText" id="leader">This is the page of music game which allows you to create your own song block. Click the button and press "D", "F", "G", "H", "J" and "K" to use it.</p>
+    <input type="button" value="Press me to start" onclick="startGame()" class="styledButton"></button>
+    <p class="styleText" id="scores"></p>
+    <p class="styleText" id="levels"></p>
+    <p class="styleText" id="details"></p>
+<script>
+function startGame() {
+    myGameArea.start();
+}
+
+class key {
+    constructor() {
+        this.startSec = 0;
+        this.endSec = 0;
+        this.lastSec = 0;
+        this.place = 0;
+        this.bePressed = false;
+    }
+    
+    start() {
+        this.startSec = myGameArea.frame;
+        this.bePressed = true;
+    }
+    end() {
+        this.bePressed = false;
+        this.endSec = myGameArea.frame;
+        this.lastSec = this.endSec - this.startSec;
+        if(this.lastSec <= 13.5) {
+            document.getElementById("details").innerHTML = document.getElementById("details").innerHTML + "newShortBlock(" + this.place + ", " + avoidOutputError(this.startSec) + ");" + "<br>";    
+        }
+        else {
+            document.getElementById("details").innerHTML = document.getElementById("details").innerHTML + "newLongBlock(" + this.place + ", " + avoidOutputError(this.startSec) + ", " + avoidOutputError(this.lastSec) + ");" + "<br>";
+        }
+        
+    }
+}
+
+var myGameArea = {
+    keyD : new key(),
+    keyF : new key(),
+    keyG : new key(),
+    keyH : new key(),
+    keyJ : new key(),
+    keyK : new key(),
+    start : function() {
+        this.frame = 0
+        this.interval = setInterval(updateGameArea, 20);
+        myGameArea.keyD.place = 1;
+        myGameArea.keyF.place = 2;
+        myGameArea.keyG.place = 3;
+        myGameArea.keyH.place = 4;
+        myGameArea.keyJ.place = 5;
+        myGameArea.keyK.place = 6;
+
+        window.addEventListener('keydown', function(e) {
+            whenKeyDown(e.code);
+            console.log('keyCode =', e.keyCode);
+            console.log('code =', e.code);
+        });
+        window.addEventListener('keyup', function (e) {
+            whenKeyUp(e.code);
+            console.log('code =', e.code, ' is up');
+        });
+    }, 
+    stop : function() {
+        clearInterval(this.interval)
+    }
+}
+
+function updateGameArea() {
+    myGameArea.frame += 1;
+    document.getElementById("levels").innerHTML = "Frames : " + myGameArea.frame + " Sec : " + (myGameArea.frame / 45);
+}
+
+function absolute(x) {
+    var x = Number(x);
+    if (x < 0) {
+        x = -x;
+    }
+    return x;
+}
+
+function getRandom (x) {
+    return Math.floor(Math.random() * x) + 1;
+}
+
+function whenKeyDown(codeOfKey) {
+    var code = String(codeOfKey);
+    if((code == "KeyD") && (!myGameArea.keyD.bePressed)){
+        myGameArea.keyD.start();
+    }
+    else if((code == "KeyF") && (!myGameArea.keyF.bePressed)) {
+        myGameArea.keyF.start();
+    }
+    else if((code == "KeyG") && (!myGameArea.keyG.bePressed)) {
+        myGameArea.keyG.start();
+    }
+    else if((code == "KeyH") && (!myGameArea.keyH.bePressed)) {
+        myGameArea.keyH.start();
+    }
+    else if((code == "KeyJ") && (!myGameArea.keyJ.bePressed)) {
+        myGameArea.keyJ.start();
+    }
+    else if((code == "KeyK") && (!myGameArea.keyK.bePressed)) {
+        myGameArea.keyK.start();
+    }
+}
+
+function whenKeyUp(codeOfKey) {
+    var code = String(codeOfKey);
+    if(code == "KeyD"){
+        // myGameArea.keyD = false;
+        myGameArea.keyD.end();
+    }
+    else if(code == "KeyF") {
+        // myGameArea.keyF = false;
+        myGameArea.keyF.end();
+    }
+    else if(code == "KeyG") {
+        // myGameArea.keyG = false;
+        myGameArea.keyG.end();
+    }
+    else if(code == "KeyH") {
+        // myGameArea.keyH = false;
+        myGameArea.keyH.end();
+    }
+    else if(code == "KeyJ") {
+        // myGameArea.keyJ = false;
+        myGameArea.keyJ.end();
+    }
+    else if(code == "KeyK") {
+        // myGameArea.keyK = false;
+        myGameArea.keyK.end();
+    }
+}
+
+function another45(x) {
+    x -= (x % 0.2);
+    return x;
+}
+
+function avoidOutputError(x) {
+    var y = x.toString()
+    return Number(y.split("000")[0]);
+}
+
+function isInteger(x) {
+    if(x % 1) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+</script>
+
+
+
+</body>
+</html>
