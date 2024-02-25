@@ -32,6 +32,12 @@ var lines = [];
 var targetArea = [];
 var text = [new conponent()];
 var combo = 0;
+var numsOfRate = {
+    perfect : 0,
+    great : 0,
+    nice : 0,
+    miss : 0
+}
 
 function startGame() {
     myGameArea.start();
@@ -214,8 +220,10 @@ function updateGameArea() {
     }
     song();
     myGameArea.frame += 1;
+    illegalDetect();
     document.getElementById("scores").innerHTML = 'Scores : ' + Math.round(scores);
-    document.getElementById("levels").innerHTML = 'Combo : ' + combo;
+    document.getElementById("levels").innerHTML = 'Combo : ' + combo + " Sec : " + myGameArea.frame / 45;
+    document.getElementById("details").innerHTML = 'Perfect : ' + numsOfRate.perfect + '<br></br>' + 'Great : ' + numsOfRate.great + '<br></br>' + 'Nice : ' + numsOfRate.nice + '<br></br>' + 'Miss : ' + numsOfRate.miss;
 }
 
 function everyFrame (n) {
@@ -286,69 +294,99 @@ function whenKeyUp(codeOfKey) {
 function rate(rate) {
     if(rate == "perfect") {
         text[0] = new conponent("Blue", myGameArea.canvas.width - 100, myGameArea.canvas.height / 2, "30px Arial", "perfect", "text");
+        numsOfRate.perfect += 1;
     }
     if(rate == "great") {
         text[0] = new conponent("Blue", myGameArea.canvas.width - 100, myGameArea.canvas.height / 2, "30px Arial", " great ", "text");
+        numsOfRate.great += 1;
     }
     if(rate == "nice") {
         text[0] = new conponent("Blue", myGameArea.canvas.width - 100, myGameArea.canvas.height / 2, "30px Arial", " nice  ", "text");
+        numsOfRate.nice += 1;
     }
     if(rate == "miss") {
         text[0] = new conponent("Blue", myGameArea.canvas.width - 100, myGameArea.canvas.height / 2, "30px Arial", " miss  ", "text");
+        numsOfRate.miss += 1;
     }
 }
 
-function newShortBlock(place, secondTime) {
+function illegalDetect() {
+    var pressKeyNum = 0;
+    if(myGameArea.keyD) {
+        pressKeyNum += 1;
+    }
+    if(myGameArea.keyF) {
+        pressKeyNum += 1;
+    }
+    if(myGameArea.keyG) {
+        pressKeyNum += 1;
+    }
+    if(myGameArea.keyH) {
+        pressKeyNum += 1;
+    }
+    if(myGameArea.keyJ) {
+        pressKeyNum += 1;
+    }
+    if(myGameArea.keyK) {
+        pressKeyNum += 1;
+    }
+    if(pressKeyNum >= 4) {
+        alert("Do not press a lot of keys at the same time. This is not allowed! \>_</");
+        myGameArea.stop();
+    }
+}
+
+function newShortBlock(place, frameTime) {
     var x = 155 + 110 * (Number(place) - 1);
-    var frameTime = secondTime * 20;
     if(myGameArea.frame == Number(frameTime)) {
         block.push(new conponent("Red", x, -60, 100, 60, "shortBlock"));
     }
 }
 
-function newLongBlock(place, secondTime, lastSecondTime) {
+function newLongBlock(place, frameTime, lastFrameTime) {
     var x = 155 + 110 * (Number(place) - 1);
-    var frameTime = Number(secondTime) * 20;
-    var blockHeight = Number(lastSecondTime) * 20 * 20;
+    var blockHeight = Number(lastFrameTime) * 10;
     if(myGameArea.frame == frameTime) {
         block.push(new conponent("Pink", x, -blockHeight, 100, blockHeight, "longBlock"));
     }
 }
 
-function song() {
+function song() {  // second * 45 = frame
     newShortBlock(1, 0);
-    newShortBlock(4, 0.5);
-    newShortBlock(1, 1);
-    newShortBlock(2, 2);
-    newShortBlock(6, 3);
-    newShortBlock(4, 4);
-    newShortBlock(1, 6);
-    newShortBlock(6, 6.5);
-    newShortBlock(2, 7);
-    newShortBlock(6, 8);
-    newShortBlock(5, 9);
-    newShortBlock(4, 10);
-    newShortBlock(3, 12);
+    newShortBlock(4, 23);
+    newShortBlock(1, 45);
+    newShortBlock(2, 90);
+    newShortBlock(6, 135);
+    newShortBlock(4, 180);
+    newShortBlock(1, 270);
+    newShortBlock(6, 293);
+    newShortBlock(2, 315);
+    newShortBlock(6, 360);
+    newShortBlock(5, 405);
+    newShortBlock(4, 450);
+    newShortBlock(3, 540);
     newShortBlock(2, 12.5);
-    newShortBlock(1, 13);
-    newShortBlock(5, 14);
-    newShortBlock(3, 15);
-    newShortBlock(2, 16);
-    newShortBlock(4, 17);
-    newShortBlock(5, 19);
-    newShortBlock(2, 19.5);
-    newShortBlock(1, 20);
-    newShortBlock(4, 21);
-    newShortBlock(6, 22);
-    newShortBlock(3, 23);
-    newLongBlock(4, 25, 3);
-    newShortBlock(6, 25);
-    newShortBlock(2, 25.5);
-    newShortBlock(3, 26);
-    newShortBlock(5, 26.5);
-    newShortBlock(1, 27);
+    newShortBlock(1, 585);
+    newShortBlock(5, 630);
+    newShortBlock(3, 675);
+    newShortBlock(2, 720);
+    newShortBlock(4, 765);
+    newShortBlock(5, 855);
+    newShortBlock(2, 878);
+    newShortBlock(1, 900);
+    newShortBlock(4, 945);
+    newShortBlock(6, 990);
+    newShortBlock(3, 1035);
+    newLongBlock(4, 1125, 135);
+    newShortBlock(6, 1125);
+    newShortBlock(2, 1148);
+    newShortBlock(3, 1170);
+    newShortBlock(5, 1193);
+    newShortBlock(1, 1215);
 }
+
 </script>
+
 
 <button onmousedown="upholding()" onmouseup="slowdown()" onmouseout="slowdown()">向上</button>
 <button onmousedown="leftholding()" onmouseup="slowdown()" onmouseout="slowdown()">向左</button>
@@ -357,6 +395,7 @@ function song() {
 <p class="styleText" id="leader">Use arrow keys or buttons to control</p>
 <p class="styleText" id="scores"></p>
 <p class="styleText" id="levels"></p>
+<p class="styleText" id="details"></p>
 
 </body>
 </html>
