@@ -222,7 +222,7 @@ function updateGameArea() {
     myGameArea.frame += 1;
     illegalDetect();
     document.getElementById("scores").innerHTML = 'Scores : ' + Math.round(scores);
-    document.getElementById("levels").innerHTML = 'Combo : ' + combo + " Sec : " + myGameArea.frame / 45;
+    document.getElementById("levels").innerHTML = 'Combo : ' + combo;
     document.getElementById("details").innerHTML = 'Perfect : ' + numsOfRate.perfect + '<br></br>' + 'Great : ' + numsOfRate.great + '<br></br>' + 'Nice : ' + numsOfRate.nice + '<br></br>' + 'Miss : ' + numsOfRate.miss;
 }
 
