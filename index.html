@@ -18,8 +18,14 @@ canvas {
     font-size: medium;
 }
 </style>
+<div style="position: absolute; right: 1%; bottom:5%;">
+    <audio controls autoplay muted loop="true">
+        <source src="./music-gameDB/枕邊童話(Nightcore).mp3">
+    </audio>
+</div>
 </head>
 <body onload="startGame()">
+<script src="./music-gameDB/song.js"></script>
 <script>
 var scores = 0;
 var levels = 0;
@@ -349,40 +355,6 @@ function newLongBlock(place, frameTime, lastFrameTime) {
     if(myGameArea.frame == frameTime) {
         block.push(new conponent("Pink", x, -blockHeight, 100, blockHeight, "longBlock"));
     }
-}
-
-function song() {  // second * 45 = frame
-    newShortBlock(1, 0);
-    newShortBlock(4, 23);
-    newShortBlock(1, 45);
-    newShortBlock(2, 90);
-    newShortBlock(6, 135);
-    newShortBlock(4, 180);
-    newShortBlock(1, 270);
-    newShortBlock(6, 293);
-    newShortBlock(2, 315);
-    newShortBlock(6, 360);
-    newShortBlock(5, 405);
-    newShortBlock(4, 450);
-    newShortBlock(3, 540);
-    newShortBlock(2, 12.5);
-    newShortBlock(1, 585);
-    newShortBlock(5, 630);
-    newShortBlock(3, 675);
-    newShortBlock(2, 720);
-    newShortBlock(4, 765);
-    newShortBlock(5, 855);
-    newShortBlock(2, 878);
-    newShortBlock(1, 900);
-    newShortBlock(4, 945);
-    newShortBlock(6, 990);
-    newShortBlock(3, 1035);
-    newLongBlock(4, 1125, 135);
-    newShortBlock(6, 1125);
-    newShortBlock(2, 1148);
-    newShortBlock(3, 1170);
-    newShortBlock(5, 1193);
-    newShortBlock(1, 1215);
 }
 
 </script>
