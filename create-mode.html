@@ -39,8 +39,13 @@ canvas {
     font-size: medium;
 }
 </style>
+<div style="position: absolute; right: 1%; bottom:5%;">
+    <audio controls autoplay muted loop="true">
+        <source src="./music-gameDB/枕邊童話(Nightcore).mp3">
+    </audio>
+</div>
 </head>
-<body>
+<body onload="startGame()">
     <p class="styleText" id="leader">This is the page of music game which allows you to create your own song block. Click the button and press "D", "F", "G", "H", "J" and "K" to use it.</p>
     <input type="button" value="Press me to start" onclick="startGame()" class="styledButton"></button>
     <p class="styleText" id="scores"></p>
@@ -61,12 +66,12 @@ class key {
     }
     
     start() {
-        this.startSec = myGameArea.frame;
+        this.startSec = myGameArea.frame - 54;
         this.bePressed = true;
     }
     end() {
         this.bePressed = false;
-        this.endSec = myGameArea.frame;
+        this.endSec = myGameArea.frame - 54;
         this.lastSec = this.endSec - this.startSec;
         if(this.lastSec <= 13.5) {
             document.getElementById("details").innerHTML = document.getElementById("details").innerHTML + "newShortBlock(" + this.place + ", " + avoidOutputError(this.startSec) + ");" + "<br>";    
