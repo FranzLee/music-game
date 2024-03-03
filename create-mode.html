@@ -66,12 +66,12 @@ class key {
     }
     
     start() {
-        this.startSec = myGameArea.frame - 54;
+        this.startSec = myGameArea.frame - 55;
         this.bePressed = true;
     }
     end() {
         this.bePressed = false;
-        this.endSec = myGameArea.frame - 54;
+        this.endSec = myGameArea.frame - 55;
         this.lastSec = this.endSec - this.startSec;
         if(this.lastSec <= 13.5) {
             document.getElementById("details").innerHTML = document.getElementById("details").innerHTML + "newShortBlock(" + this.place + ", " + avoidOutputError(this.startSec) + ");" + "<br>";    
