@@ -102,7 +102,7 @@ function conponent(color, x, y, weight, height, type, time){
     this.update = function() {
         if (this.type == "text") {
             myGameArea.context.font = this.weight;
-            myGameArea.context.fillStyle = grd;
+            myGameArea.context.fillStyle = this.color;
             myGameArea.context.fillText(this.height, this.x, this.y);
         }
         else if (this.type == "shortBlock") {
