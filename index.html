@@ -29,9 +29,6 @@ canvas {
 <script>
 var scores = 0;
 var levels = 0;
-var obstacle = [];
-var obstacleCenter = 270;
-var obstacleGap = 80;
 var block = [];
 var blockSpeed = 10;
 var lines = [];
@@ -359,12 +356,6 @@ function newLongBlock(place, frameTime, lastFrameTime) {
 
 </script>
 
-
-<button onmousedown="upholding()" onmouseup="slowdown()" onmouseout="slowdown()">向上</button>
-<button onmousedown="leftholding()" onmouseup="slowdown()" onmouseout="slowdown()">向左</button>
-<button onmousedown="rightholding()" onmouseup="slowdown()" onmouseout="slowdown()">向右</button>
-<button onmousedown="downholding()" onmouseup="slowdown()" onmouseout="slowdown()">向下</button>
-<p class="styleText" id="leader">Use arrow keys or buttons to control</p>
 <p class="styleText" id="scores"></p>
 <p class="styleText" id="levels"></p>
 <p class="styleText" id="details"></p>
